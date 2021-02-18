@@ -1,6 +1,6 @@
 {
     "name": "yan9/etocdn",
-    "description": "Laravek package",
+    "description": "Laravel package",
     "license": "MIT",
     "type": "library",
     "require": {
