@@ -7,17 +7,17 @@ use Yan9\Etocdn\Expections\OssException;
 
 class OssClient
 {
-    const ETOCDN_URL = "https://oss-api.etocdn.cn/file/uploadByFile";
+    const ETOCDN_URL = "http://10.100.20.241:21400/file/uploadByFile";
 
     private $accessOrg;
     private $accessBrand;
     private $accessIdcInfo;
     private $dataTime;
     private $accessKey;
-    private $sign;
+    private $secretKey;
 
 
-    public function __construct($accessOrg, $accessBrand, $accessIdcInfo, $dataTime, $accessKey = NULL, $sign = NULL)
+    public function __construct($accessOrg, $accessBrand, $accessIdcInfo, $dataTime, $accessKey = NULL, $secretKey = NULL)
     {
         $accessOrg = trim($accessOrg);
         $accessBrand = trim($accessBrand);
@@ -42,7 +42,7 @@ class OssClient
         $this->accessIdcInfo = $accessIdcInfo;
         $this->dataTime = $dataTime;
         $this->accessKey = $accessKey;
-        $this->sign = $sign;
+        $this->secretKey = $secretKey;
     }
 
     public function put($object, $content, $header = NULL)
@@ -50,17 +50,25 @@ class OssClient
         $this->precheckCommon($object, $content);
 
         $header['DateTime'] = $this->dataTime;
-        $header['Sign'] = $this->sign;
+        $header['Sign'] = self::getSign();
         $header['AccessKey'] = $this->accessKey;
         $header['Org'] = $this->accessOrg;
         $header['Brands'] = $this->accessBrand;
         $header['Idcinfo'] = $this->accessIdcInfo;
 
-        $form_params['filename'] = $object;
-        $form_params['file'] = $content;
+        $multipart = [
+            [
+                'name' => 'fileName',
+                'contents' => $object,
+            ],
+            [
+                'name' => 'file',
+                'contents' => fopen($content, 'r')
+            ]
+        ];
 
         $httpClient = new Client();
-        $response = $httpClient->request('post', self::ETOCDN_URL, ['headers' => $header, 'form_params' => $form_params]);
+        $response = $httpClient->request('post', self::ETOCDN_URL, ['headers' => $header, 'multipart' => $multipart]);
 
         if ($response instanceof \Psr\Http\Message\ResponseInterface) {
             $body = $response->getBody();
@@ -96,6 +104,12 @@ class OssClient
         if (empty($name)) {
             throw new OssException($errMsg);
         }
+    }
+
+    private function getSign()
+    {
+        $str = $this->accessKey . $this->secretKey . $this->dataTime . $this->accessOrg . $this->accessBrand . $this->accessIdcInfo;
+        return hash_hmac('md5', $str, $this->secretKey);
     }
 
 }
