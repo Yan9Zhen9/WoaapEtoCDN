@@ -2,7 +2,7 @@
 
 Laravel package
 
-- 安装后执行命令 `php artisan vendor:publish --provider="Woaap\Etocdn\EtocdnServiceProvider"`
+- 安装后执行命令 `php artisan vendor:publish --provider="Yan9\Etocdn\EtocdnServiceProvider"`
 
 - 配置 config/etocdn.php
 
