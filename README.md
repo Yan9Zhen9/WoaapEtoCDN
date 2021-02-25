@@ -51,7 +51,7 @@ In `config/app.php` add this line to providers array:
     Log::debug('OSS config:', [$filename]);
     
     // 上传文件
-    $result = $storage->put($filename, $realPath);
+    $result = $storage->put($filename, file_get_contents($realPath));
     if (!$result) return false;
     var_dump($storage->url($filename));
 
