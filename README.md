@@ -2,7 +2,7 @@
 
 Laravel package
 
-##Require
+## Require
 
 Installation:
 
@@ -12,7 +12,7 @@ In `config/app.php` add this line to providers array:
 
 `Yan9\Etocdn\EtocdnOssServiceProvider::class,`
 
-##Configuration
+## Configuration
 ```angular2html
 'disks' => [
     ...
@@ -33,7 +33,7 @@ In `config/app.php` add this line to providers array:
 ]
 ```
 
-##Usage
+## Usage
 ```angular2html
     $image = $request->file('file');
 
