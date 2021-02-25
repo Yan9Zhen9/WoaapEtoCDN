@@ -7,8 +7,12 @@ use Yan9\Etocdn\Expections\OssException;
 
 class OssClient
 {
-    const ETOCDN_STRING_URL = "http://10.100.20.241:21400/file/uploadByFileStr";
-    const ETOCDN_REMOTE_URL = "http://10.100.20.241:21400/file/uploadListByUrl";
+    const DEV_CDN_DOMIAN = "http://10.100.20.241:21400";
+    const PROD_CDN_DOMIAN = "https://oss-api.etocdn.cn";
+
+    const ETOCDN_STRING_URL = "/file/uploadByFileStr";
+    const ETOCDN_REMOTE_URL = "/file/uploadByUrl";
+    const ETOCDN_REMOTE_BATCH_URL = "/file/uploadListByUrl";
 
     private $accessOrg;
     private $accessBrand;
@@ -53,6 +57,19 @@ class OssClient
         ];
     }
 
+    private function getDomian()
+    {
+        switch (config('filesystems.disks.etocdn.cdnEnv')) {
+            case 'PROD':
+                $cdn_domian = self::PROD_CDN_DOMIAN;
+                break;
+            default:
+                $cdn_domian = self::DEV_CDN_DOMIAN;
+                break;
+        }
+        return $cdn_domian;
+    }
+
     public function put($object, $content, $options = NULL)
     {
         $this->precheckCommon($object, $content);
@@ -61,24 +78,35 @@ class OssClient
             'fileStr' => base64_encode(file_get_contents($content)),
             'keepFileNameStatus' => $options['save_by_file_name'] ?? false,
         ];
-        return $this->post(self::ETOCDN_STRING_URL, self::getHeader(), $post_fields);
+        return $this->post(self::getDomian() . self::ETOCDN_STRING_URL, self::getHeader(), $post_fields);
     }
 
     public function writeStream($object, $content, $options = NULL)
     {
         $this->precheckCommon($object, $content, false);
         $post_fields = [
-            'fileUrlList' => $object,
+            'fileName' => $object,
+            'fileUrl' => $content,
             'keepFileNameStatus' => $options['save_by_file_name'] ?? false,
         ];
-        return $this->post(self::ETOCDN_REMOTE_URL, self::getHeader(), $post_fields);
+        return $this->post(self::getDomian() . self::ETOCDN_REMOTE_URL, self::getHeader(), $post_fields);
+    }
+
+    public function writeBatch($object, $content, $options = NULL)
+    {
+        $this->precheckCommon($object, $content, false);
+        $post_fields = [
+            'fileUrlList' => unserialize($content),
+            'keepFileNameStatus' => false,
+        ];
+        return $this->post(self::getDomian() . self::ETOCDN_REMOTE_BATCH_URL, self::getHeader(), $post_fields);
     }
 
     private function post($url, $headers, $post_fields)
     {
         $httpClient = new Client([
-            'timeout'  => 10,
-            'verify'   => false,
+            'timeout' => 10,
+            'verify' => false,
         ]);
 
         $res = $httpClient->request('post', $url, ['headers' => $headers, 'json' => $post_fields]);
@@ -96,9 +124,9 @@ class OssClient
         dd($contents);
         $result = json_decode($contents, true);
 
-        if(intval($status)==200 && JSON_ERROR_NONE === json_last_error()){
+        if (intval($status) == 200 && JSON_ERROR_NONE === json_last_error()) {
             return $result;
-        }else{
+        } else {
             return false;
         }
     }

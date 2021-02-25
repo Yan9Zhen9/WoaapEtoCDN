@@ -14,7 +14,7 @@ class EtocdnOssAdapter extends AbstractAdapter
     protected $client;
 
     protected $endPoint;
-    
+
     protected $cdnDomain;
 
     protected $ssl;
@@ -30,12 +30,12 @@ class EtocdnOssAdapter extends AbstractAdapter
      * EtocdnOssAdapter constructor.
      *
      * @param OssClient $client
-     * @param string    $endPoint
-     * @param bool      $ssl
-     * @param bool      $isCname
-     * @param bool      $debug
-     * @param null      $prefix
-     * @param array     $options
+     * @param string $endPoint
+     * @param bool $ssl
+     * @param bool $isCname
+     * @param bool $debug
+     * @param null $prefix
+     * @param array $options
      */
     public function __construct(
         OssClient $client,
@@ -68,7 +68,13 @@ class EtocdnOssAdapter extends AbstractAdapter
         $object = $this->applyPathPrefix($path);
 
         try {
-            $result = $this->client->put($object, $contents, ['save_by_file_name'=>true]);
+            if (substr($contents, 0, 4) == 'http') {
+                $result = $this->client->writeStream($object, $contents, ['save_by_file_name' => true]);
+            } elseif ($path === 'BatchUpload') {
+                $result = $this->client->writeBatch($object, $contents, ['save_by_file_name' => false]);
+            } else {
+                $result = $this->client->put($object, $contents, ['save_by_file_name' => true]);
+            }
         } catch (OssException $e) {
             $this->logErr(__FUNCTION__, $e);
             return false;
@@ -77,8 +83,9 @@ class EtocdnOssAdapter extends AbstractAdapter
         return $result;
     }
 
-    protected function logErr($fun, $e){
-        if( $this->debug ){
+    protected function logErr($fun, $e)
+    {
+        if ($this->debug) {
             Log::error($fun . ": FAILED");
             Log::error($e->getMessage());
         }
@@ -90,7 +97,7 @@ class EtocdnOssAdapter extends AbstractAdapter
             if (1 == count(array_values($this->getData))) {
                 return $this->getData[0]['ossUrl'];
             } else {
-                return array_column($this->getData,'ossUrl');
+                return array_column($this->getData, 'ossUrl');
             }
         } else {
             return false;
@@ -184,16 +191,6 @@ class EtocdnOssAdapter extends AbstractAdapter
 
     public function writeStream($path, $resource, Config $config)
     {
-        $object = $this->applyPathPrefix($path);
-
-        try {
-            $result = $this->client->writeStream($object, $resource, ['save_by_file_name'=>true]);
-        } catch (OssException $e) {
-            $this->logErr(__FUNCTION__, $e);
-            return false;
-        }
-        $this->getData = $result['data'];
-        return $result;
+        // TODO: Implement getVisibility() method.
     }
-
 }
