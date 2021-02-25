@@ -75,7 +75,7 @@ class OssClient
         $this->precheckCommon($object, $content);
         $post_fields = [
             'fileName' => $object,
-            'fileStr' => base64_encode(file_get_contents($content)),
+            'fileStr' => base64_encode($content),
             'keepFileNameStatus' => $options['save_by_file_name'] ?? false,
         ];
         return $this->post(self::getDomian() . self::ETOCDN_STRING_URL, self::getHeader(), $post_fields);
