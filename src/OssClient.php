@@ -121,7 +121,6 @@ class OssClient
         $status = $res->getStatusCode();
         $contents = $body->getContents();
 
-        dd($contents);
         $result = json_decode($contents, true);
 
         if (intval($status) == 200 && JSON_ERROR_NONE === json_last_error()) {
