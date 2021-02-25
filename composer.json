@@ -21,7 +21,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Yan9\\Etocdn\\EtocdnServiceProvider"
+                "Yan9\\Etocdn\\EtocdnOssServiceProvider"
             ]
         }
     },
