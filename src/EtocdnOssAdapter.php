@@ -68,7 +68,7 @@ class EtocdnOssAdapter extends AbstractAdapter
         $object = $this->applyPathPrefix($path);
 
         try {
-            $result = $this->client->put($object, $contents);
+            $result = $this->client->put($object, $contents, ['save_by_file_name'=>true]);
         } catch (OssException $e) {
             $this->logErr(__FUNCTION__, $e);
             return false;
@@ -187,7 +187,7 @@ class EtocdnOssAdapter extends AbstractAdapter
         $object = $this->applyPathPrefix($path);
 
         try {
-            $result = $this->client->writeStream($object, $resource);
+            $result = $this->client->writeStream($object, $resource, ['save_by_file_name'=>true]);
         } catch (OssException $e) {
             $this->logErr(__FUNCTION__, $e);
             return false;
