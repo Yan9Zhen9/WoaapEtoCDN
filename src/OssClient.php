@@ -7,7 +7,7 @@ use Yan9\Etocdn\Expections\OssException;
 
 class OssClient
 {
-    const DEV_CDN_DOMIAN = "http://10.100.20.241:21400";
+    const DEV_CDN_DOMIAN = "https://sit-oss-api.etocdn.cn";
     const PROD_CDN_DOMIAN = "https://oss-api.etocdn.cn";
 
     const ETOCDN_STRING_URL = "/file/uploadByFileStr";
