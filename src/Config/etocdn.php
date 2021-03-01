@@ -9,6 +9,7 @@ return [
         'accessOrg'     => env('ETOCDN_ACCESS_ORG'),
         'accessBrand'   => env('ETOCDN_ACCESS_BRAND'),
         'accessIdcInfo' => env('ETOCDN_ACCESS_IDCINFO'),
+        'accessOs'      => env('ETOCDN_ACCESS_OS'),
         'endpoint'      => '',
         'cdnDomain'     => '',
         'ssl'           => true,

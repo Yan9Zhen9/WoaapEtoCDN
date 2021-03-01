@@ -83,6 +83,19 @@ class EtocdnOssAdapter extends AbstractAdapter
         return $result;
     }
 
+    public function writeFile($path, $filePath){
+        $object = $this->applyPathPrefix($path);
+
+        try {
+            $result = $this->client->uploadFile($object, $filePath);
+        } catch (OssException $e) {
+            $this->logErr(__FUNCTION__, $e);
+            return false;
+        }
+        $this->getData = $result['data'];
+        return $result;
+    }
+
     protected function logErr($fun, $e)
     {
         if ($this->debug) {

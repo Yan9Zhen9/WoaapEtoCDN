@@ -24,6 +24,7 @@ In `config/app.php` add this line to providers array:
         'accessBrand'   => env('ETOCDN_ACCESS_BRAND'),
         'accessIdcInfo' => env('ETOCDN_ACCESS_IDCINFO'),
         'cdnEnv'        => env('ETOCDN_CDNENV'),   // PROD 为正式，其他全部为测试
+        'accessOs'      => env('ETOCDN_ACCESS_OS'),     // crm传1
         'endpoint'      => '',
         'cdnDomain'     => '',
         'ssl'           => true,

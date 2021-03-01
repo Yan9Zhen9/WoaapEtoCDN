@@ -17,11 +17,12 @@ class OssClient
     private $accessOrg;
     private $accessBrand;
     private $accessIdcInfo;
+    private $accessOs;
     private $accessKey;
     private $secretKey;
 
 
-    public function __construct($accessOrg, $accessBrand, $accessIdcInfo, $accessKey = NULL, $secretKey = NULL)
+    public function __construct($accessOrg, $accessBrand, $accessIdcInfo, $accessOs, $accessKey = NULL, $secretKey = NULL)
     {
         $accessOrg = trim($accessOrg);
         $accessBrand = trim($accessBrand);
@@ -36,10 +37,14 @@ class OssClient
         if (empty($accessIdcInfo)) {
             throw new OssException("access idcinfo is empty");
         }
+        if (empty($accessOs)) {
+            throw new OssException("access os is empty");
+        }
 
         $this->accessOrg = $accessOrg;
         $this->accessBrand = $accessBrand;
         $this->accessIdcInfo = $accessIdcInfo;
+        $this->accessOs = $accessOs;
         $this->accessKey = $accessKey;
         $this->secretKey = $secretKey;
     }
@@ -53,7 +58,8 @@ class OssClient
             'AccessKey' => $this->accessKey,
             'Org' => $this->accessOrg,
             'Brands' => $this->accessBrand,
-            'Idcinfo' => $this->accessIdcInfo
+            'Idcinfo' => $this->accessIdcInfo,
+            'Os' => $this->accessOs,
         ];
     }
 
@@ -149,7 +155,7 @@ class OssClient
 
     private function getSign($dataTime)
     {
-        $str = $this->accessKey . $this->secretKey . $dataTime . $this->accessOrg . $this->accessBrand . $this->accessIdcInfo;
+        $str = $this->accessKey . $this->secretKey . $dataTime . $this->accessOrg . $this->accessBrand . $this->accessIdcInfo . $this->accessOs;
         return hash_hmac('md5', $str, $this->secretKey);
     }
 

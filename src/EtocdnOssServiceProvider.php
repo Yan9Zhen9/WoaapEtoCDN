@@ -26,6 +26,7 @@ class EtocdnOssServiceProvider extends ServiceProvider
             $accessOrg  = $config['accessOrg'];
             $accessBrand = $config['accessBrand'];
             $accessIdcInfo = $config['accessIdcInfo'];
+            $accessOs = $config['accessOs'];
 
             $cdnDomain = empty($config['cdnDomain']) ? '' : $config['cdnDomain'];
             $ssl       = empty($config['ssl']) ? false : $config['ssl']; 
@@ -36,6 +37,7 @@ class EtocdnOssServiceProvider extends ServiceProvider
                 'Org' => $accessOrg,
                 'Brands' => $accessBrand,
                 'Idcinfo' => $accessIdcInfo,
+                'Os' => $accessOs,
             ];
             $prefix = null;
 
@@ -43,7 +45,7 @@ class EtocdnOssServiceProvider extends ServiceProvider
             
             if($debug) Log::debug('OSS config:', $config);
 
-            $client  = new OssClient($accessOrg, $accessBrand, $accessIdcInfo, $accessKey, $secretKey);
+            $client  = new OssClient($accessOrg, $accessBrand, $accessIdcInfo, $accessOs, $accessKey, $secretKey);
             $adapter = new EtocdnOssAdapter($client, $endPoint, $ssl, $isCname, $debug, $cdnDomain, $prefix, $options);
 
             //Log::debug($client);
