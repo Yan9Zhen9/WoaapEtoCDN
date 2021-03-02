@@ -22,9 +22,9 @@ In `config/app.php` add this line to providers array:
         'secretKey'     => env('ETOCDN_SECRET_KEY'),
         'accessOrg'     => env('ETOCDN_ACCESS_ORG'),
         'accessBrand'   => env('ETOCDN_ACCESS_BRAND'),
-        'accessIdcInfo' => env('ETOCDN_ACCESS_IDCINFO'),
-        'cdnEnv'        => env('ETOCDN_CDNENV'),   // PROD 为正式，其他全部为测试
-        'accessOs'      => env('ETOCDN_ACCESS_OS'),     // crm传1
+        'accessIdcInfo' => env('ETOCDN_ACCESS_IDCINFO'),    // 北京传1，苏州传2，深圳传3
+        'cdnEnv'        => env('ETOCDN_CDNENV'),            // PROD 为正式，其他全部为测试
+        'accessOs'      => env('ETOCDN_ACCESS_OS'),         // crm传1，etoshop传2，s2m传3，EMCN传4
         'endpoint'      => '',
         'cdnDomain'     => '',
         'ssl'           => true,
