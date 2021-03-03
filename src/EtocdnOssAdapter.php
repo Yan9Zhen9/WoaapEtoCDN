@@ -75,11 +75,16 @@ class EtocdnOssAdapter extends AbstractAdapter
             } else {
                 $result = $this->client->put($object, $contents, ['save_by_file_name' => true]);
             }
-        } catch (OssException $e) {
+
+            if ('0' == $result['code']) {
+                $this->getData = $result['data'];
+            } else {
+                throw new \Exception($result['message']);
+            }
+        } catch (\Exception $e) {
             $this->logErr(__FUNCTION__, $e);
             return false;
         }
-        $this->getData = $result['data'];
         return $result;
     }
 
